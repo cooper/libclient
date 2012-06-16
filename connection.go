@@ -45,7 +45,7 @@ func Connect(path string) (conn *Connection, err error) {
 }
 
 // send a JSON event
-func (conn *Connection) send(command string, params map[string]interface{}) bool {
+func (conn *Connection) Send(command string, params map[string]interface{}) bool {
 	b, err := json.Marshal(params)
 	if err != nil {
 		return false
