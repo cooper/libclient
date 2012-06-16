@@ -19,6 +19,7 @@ func Loop() {
 			if err != nil {
 				time.Sleep(5)
 			} else {
+				Launch.Register()
 				Launch.Run()
 			}
 		}

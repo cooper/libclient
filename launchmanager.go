@@ -1,5 +1,7 @@
 package libclient
 
+import "os"
+
 type LaunchManagerClient struct {
 	*Connection
 }
@@ -10,5 +12,13 @@ func ConnectLaunchManager() (lm *LaunchManagerClient, err error) {
 	return
 }
 
+// register to LaunchManager
+func (conn *LaunchManagerClient) Register() {
+	conn.Send("register", map[string]interface{}{
+		"pid": os.Getpid(),
+	})
+}
+
+// launch an application
 func (*LaunchManagerClient) Launch() {
 }
