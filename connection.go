@@ -2,6 +2,7 @@ package libclient
 
 import (
 	"bufio"
+	"encoding/json"
 	"net"
 	"os"
 )
@@ -43,5 +44,48 @@ func Connect(path string) (conn *Connection, err error) {
 	return
 }
 
-func (*Connection) Send() {
+// send a JSON event
+func (conn *Connection) send(command string, params map[string]interface{}) bool {
+	b, err := json.Marshal(params)
+	if err != nil {
+		return false
+	}
+	_, err = conn.outgoing.Write(b)
+	if err != nil {
+		return false
+	}
+	return true
+}
+
+// read data from a connection continuously
+func (conn *Connection) Run() {
+	for {
+		line, _, err := conn.incoming.ReadLine()
+		if err != nil {
+			return
+		}
+		conn.handleEvent(line)
+	}
+}
+
+// handle a JSON event
+func (conn *Connection) handleEvent(data []byte) bool {
+	var i interface{}
+	err := json.Unmarshal(data, &i)
+	if err != nil {
+		return false
+	}
+
+	// should be an array.
+	c := i.([]interface{})
+
+	command := c[0].(string)
+	params := c[1].(map[string]interface{})
+
+	// if a handler for this command exists, run it
+	if EventHandlers[command] != nil {
+		EventHandlers[command](conn, command, params)
+	}
+
+	return true
 }
