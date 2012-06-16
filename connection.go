@@ -1,9 +1,9 @@
 package libclient
 
 import (
-	"os"
-	"net"
 	"bufio"
+	"net"
+	"os"
 )
 
 type Connection struct {
@@ -34,8 +34,8 @@ func Connect(path string) (conn *Connection, err error) {
 	}
 
 	conn = &Connection{
-		path: path,
-		conn: unixConn,
+		path:     path,
+		conn:     unixConn,
 		incoming: bufio.NewReader(unixConn),
 		outgoing: bufio.NewWriter(unixConn),
 	}
