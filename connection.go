@@ -8,7 +8,7 @@ import (
 
 type Connection struct {
 	path     string
-	conn     net.Conn
+	socket   net.Conn
 	incoming *bufio.Reader
 	outgoing *bufio.Writer
 }
@@ -35,10 +35,13 @@ func Connect(path string) (conn *Connection, err error) {
 
 	conn = &Connection{
 		path:     path,
-		conn:     unixConn,
+		socket:   unixConn,
 		incoming: bufio.NewReader(unixConn),
 		outgoing: bufio.NewWriter(unixConn),
 	}
 
 	return
+}
+
+func (*Connection) Send() {
 }
