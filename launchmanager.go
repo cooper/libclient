@@ -13,10 +13,13 @@ func ConnectLaunchManager() (lm *LaunchManagerClient, err error) {
 }
 
 // register to LaunchManager
-func (conn *LaunchManagerClient) Register() {
-	conn.Send("register", map[string]interface{}{
-		"pid": os.Getpid(),
-	})
+func (conn *LaunchManagerClient) Register(data map[string]string) {
+	flexibleData := make(map[string]interface{}, len(data))
+	for key, val := range data {
+		flexibleData[key] = val
+	}
+	flexibleData["pid"] = os.Getpid()
+	conn.Send("register", flexibleData)
 }
 
 // launch an application
