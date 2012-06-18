@@ -6,9 +6,9 @@ type ProcessManagerClient struct {
 	*Connection
 }
 
-func ConnectProcessManager() (lm *ProcessManagerClient, err error) {
+func ConnectProcessManager() (pm *ProcessManagerClient, err error) {
 	conn, err := Connect("/system/socket/ProcessSocket")
-	lm = &ProcessManagerClient{conn}
+	pm = &ProcessManagerClient{conn}
 	return
 }
 
@@ -20,8 +20,4 @@ func (conn *ProcessManagerClient) Register(data map[string]string) {
 	}
 	flexibleData["pid"] = os.Getpid()
 	conn.Send("register", flexibleData)
-}
-
-// Process an application
-func (*ProcessManagerClient) Process() {
 }

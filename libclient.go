@@ -4,6 +4,7 @@ import "time"
 
 var (
 	Process *ProcessManagerClient
+	Launch  *LaunchManagerClient
 )
 
 // one function that does it all for convenience
@@ -11,8 +12,8 @@ func Loop() {
 
 }
 
-// Processmanager loop
-func Launch(data map[string]string) {
+// processmanager loop
+func RunProcess(data map[string]string) {
 	var err error
 	for {
 		Process, err = ConnectProcessManager()
@@ -23,6 +24,22 @@ func Launch(data map[string]string) {
 		} else {
 			Process.Register(data)
 			Process.Run()
+		}
+	}
+}
+
+// launchmanager loop
+func RunLaunch() {
+	var err error
+	for {
+		Launch, err = ConnectLaunchManager()
+
+		// wait five seconds before trying again...
+		if err != nil {
+			time.Sleep(5)
+		} else {
+			Launch.Register()
+			Launch.Run()
 		}
 	}
 }
