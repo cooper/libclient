@@ -3,7 +3,7 @@ package libclient
 import "time"
 
 var (
-	Launch *LaunchManagerClient
+	Process *ProcessManagerClient
 )
 
 // one function that does it all for convenience
@@ -11,18 +11,18 @@ func Loop() {
 
 }
 
-// launchmanager loop
-func LM(data map[string]string) {
+// Processmanager loop
+func Launch(data map[string]string) {
 	var err error
 	for {
-		Launch, err = ConnectLaunchManager()
+		Process, err = ConnectProcessManager()
 
 		// wait five seconds before trying again...
 		if err != nil {
 			time.Sleep(5)
 		} else {
-			Launch.Register(data)
-			Launch.Run()
+			Process.Register(data)
+			Process.Run()
 		}
 	}
 }
