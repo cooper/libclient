@@ -6,9 +6,9 @@ type LaunchManagerClient struct {
 	*Connection
 }
 
-func ConnectLaunchManager() (pm *LaunchManagerClient, err error) {
+func ConnectLaunchManager() (lm *LaunchManagerClient, err error) {
 	conn, err := Connect("/system/socket/LaunchSocket")
-	pm = &LaunchManagerClient{conn}
+	lm = &LaunchManagerClient{conn}
 	return
 }
 

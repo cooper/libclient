@@ -11,7 +11,6 @@ type Connection struct {
 	path     string
 	socket   net.Conn
 	incoming *bufio.Reader
-	outgoing *bufio.Writer
 }
 
 func Connect(path string) (conn *Connection, err error) {
@@ -38,7 +37,6 @@ func Connect(path string) (conn *Connection, err error) {
 		path:     path,
 		socket:   unixConn,
 		incoming: bufio.NewReader(unixConn),
-		outgoing: bufio.NewWriter(unixConn),
 	}
 
 	return
@@ -46,12 +44,12 @@ func Connect(path string) (conn *Connection, err error) {
 
 // send a JSON event
 func (conn *Connection) Send(command string, params map[string]interface{}) bool {
-	b, err := json.Marshal(params)
+	b, err := json.Marshal([]interface{}{command, params})
 	if err != nil {
 		return false
 	}
-	_, err = conn.outgoing.Write(b)
-	if err != nil {
+	b = append(b, '\n')
+	if _, err = conn.socket.Write(b); err != nil {
 		return false
 	}
 	return true

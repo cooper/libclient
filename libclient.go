@@ -1,6 +1,7 @@
 package libclient
 
 import "time"
+import "fmt"
 
 var (
 	Process *ProcessManagerClient
@@ -21,6 +22,7 @@ func RunProcess(data map[string]string) {
 		// wait five seconds before trying again...
 		if err != nil {
 			time.Sleep(5)
+			fmt.Println(err.Error())
 		} else {
 			Process.Register(data)
 			Process.Run()
@@ -34,6 +36,7 @@ func RunLaunch() {
 	for {
 		Launch, err = ConnectLaunchManager()
 
+		// first of all, this should never happen.
 		// wait five seconds before trying again...
 		if err != nil {
 			time.Sleep(5)
