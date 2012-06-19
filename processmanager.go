@@ -1,6 +1,9 @@
 package libclient
 
-import "os"
+import (
+	"os"
+	"time"
+)
 
 type ProcessManagerClient struct {
 	*Connection
@@ -20,4 +23,20 @@ func (conn *ProcessManagerClient) Register(data map[string]string) {
 	}
 	flexibleData["pid"] = os.Getpid()
 	conn.Send("register", flexibleData)
+}
+
+// processmanager loop
+func RunProcess(data map[string]string) {
+	var err error
+	for {
+		Process, err = ConnectProcessManager()
+
+		// wait five seconds before trying again...
+		if err != nil {
+			time.Sleep(5)
+		} else {
+			Process.Register(data)
+			Process.Run()
+		}
+	}
 }

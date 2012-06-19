@@ -1,6 +1,9 @@
 package libclient
 
-import "os"
+import (
+	"os"
+	"time"
+)
 
 type LaunchManagerClient struct {
 	*Connection
@@ -21,4 +24,21 @@ func (conn *LaunchManagerClient) Register() {
 
 // Launch an application
 func (*LaunchManagerClient) Launch() {
+}
+
+// launchmanager loop
+func RunLaunch() {
+	var err error
+	for {
+		Launch, err = ConnectLaunchManager()
+
+		// first of all, this should never happen.
+		// wait five seconds before trying again...
+		if err != nil {
+			time.Sleep(5)
+		} else {
+			Launch.Register()
+			Launch.Run()
+		}
+	}
 }
