@@ -12,6 +12,7 @@ type LaunchManagerClient struct {
 func ConnectLaunchManager() (lm *LaunchManagerClient, err error) {
 	conn, err := Connect("/system/socket/LaunchSocket")
 	lm = &LaunchManagerClient{conn}
+	lm.eventHandler = launchEventHandler
 	return
 }
 
@@ -40,5 +41,12 @@ func RunLaunch() {
 			Launch.Register()
 			Launch.Run()
 		}
+	}
+}
+
+// event handler
+func launchEventHandler(conn *Connection, command string, params map[string]interface{}) {
+	if LaunchEventHandlers[command] != nil {
+		LaunchEventHandlers[command](conn, command, params)
 	}
 }

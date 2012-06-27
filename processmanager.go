@@ -12,6 +12,7 @@ type ProcessManagerClient struct {
 func ConnectProcessManager() (pm *ProcessManagerClient, err error) {
 	conn, err := Connect("/system/socket/ProcessSocket")
 	pm = &ProcessManagerClient{conn}
+	pm.eventHandler = processEventHandler
 	return
 }
 
@@ -38,5 +39,12 @@ func RunProcess(data map[string]string) {
 			Process.Register(data)
 			Process.Run()
 		}
+	}
+}
+
+// event handler
+func processEventHandler(conn *Connection, command string, params map[string]interface{}) {
+	if ProcessEventHandlers[command] != nil {
+		ProcessEventHandlers[command](conn, command, params)
 	}
 }

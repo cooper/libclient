@@ -8,9 +8,10 @@ import (
 )
 
 type Connection struct {
-	path     string
-	socket   net.Conn
-	incoming *bufio.Reader
+	path         string
+	socket       net.Conn
+	incoming     *bufio.Reader
+	eventHandler func(conn *Connection, command string, params map[string]interface{})
 }
 
 func Connect(path string) (conn *Connection, err error) {
@@ -81,9 +82,7 @@ func (conn *Connection) handleEvent(data []byte) bool {
 	params := c[1].(map[string]interface{})
 
 	// if a handler for this command exists, run it
-	if EventHandlers[command] != nil {
-		EventHandlers[command](conn, command, params)
-	}
+	conn.eventHandler(conn, command, params)
 
 	return true
 }
