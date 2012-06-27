@@ -12,6 +12,7 @@ type ProcessManagerClient struct {
 func ConnectProcessManager() (pm *ProcessManagerClient, err error) {
 	conn, err := Connect("/system/socket/ProcessSocket")
 	pm = &ProcessManagerClient{conn}
+	createProcessEventHandlers()
 	pm.eventHandler = processEventHandler
 	return
 }
